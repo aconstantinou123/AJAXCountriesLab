@@ -15,14 +15,19 @@ var populateList = function (countries) {
 }
 
 var displayCountryInfo = function(country){
-    console.log(country);
+    var div = document.getElementById('border-countries');
+    div.innerText = '';
+    country[0].borders.forEach(function (borderCountry) {
+        var url = 'https://restcountries.eu/rest/v2/alpha/' + borderCountry;
+        makeRequest(url, findBorderCountry);
+    })
     var ul = document.getElementById('selected-country');
     var liName = document.createElement('li');
     var liCapital = document.createElement('li');
     var liPopulation = document.createElement('li');
-    liName.innerText = country[0].name;
-    liCapital.innerText = country[0].capital;
-    liPopulation.innerText = country[0].population;
+    liName.innerText = 'Country: ' + country[0].name;
+    liCapital.innerText = 'Capital: ' + country[0].capital;
+    liPopulation.innerText = 'Population: ' + country[0].population;
     ul.innerText = '';
     ul.appendChild(liName);
     ul.appendChild(liCapital);
@@ -30,6 +35,23 @@ var displayCountryInfo = function(country){
 
     var jsonString = JSON.stringify(country);
     localStorage.setItem('country', jsonString);
+}
+
+var displayBorderCountryInfo = function(country){
+    console.log(country);
+    var div = document.getElementById('border-countries');
+    var ul = document.createElement('ul')
+    var liName = document.createElement('li');
+    var liCapital = document.createElement('li');
+    var liPopulation = document.createElement('li');
+    liName.innerText = 'Country: ' + country.name;
+    liCapital.innerText = 'Capital: ' + country.capital;
+    liPopulation.innerText = 'Population: ' + country.population;
+    ul.innerText = '';
+    ul.appendChild(liName);
+    ul.appendChild(liCapital);
+    ul.appendChild(liPopulation);
+    div.appendChild(ul);
 }
 
 var handleElementSelected = function () {
@@ -44,6 +66,15 @@ var findCountry = function () {
     var jsonString = this.responseText;
     var country = JSON.parse(jsonString);
     displayCountryInfo(country);
+}
+
+var findBorderCountry = function () {
+    if (this.status !== 200){
+        return;
+    }
+    var jsonString = this.responseText;
+    var country = JSON.parse(jsonString);
+    displayBorderCountryInfo(country);
 }
 
 
